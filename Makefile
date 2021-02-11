@@ -6,34 +6,28 @@
 #
 ############################################################################
 
+bsc:
+	make Modelo-TCC-DCOMP
 
-FILENAME = Modelo-TCC-DCOMP
-#FILENAME = Modelo-Mestrado-PROCC
+msc:
+	make Modelo-Mestrado-DCOMP
 
 
-all: $(FILENAME).pdf
-
-dvi: $(FILENAME).dvi
-
-ps: $(FILENAME).ps
-
-pimg.ps: $(FILENAME).dvi
-	dvips -o $(FILENAME).ps $(FILENAME).dvi
-
-$(FILENAME).pdf: *.tex
-	pdflatex $(FILENAME).tex
-	bibtex $(FILENAME)
-	pdflatex $(FILENAME).tex
-	pdflatex $(FILENAME).tex
-	evince $(FILENAME).pdf
-
-$(FILENAME).dvi: clean $(FILENAME).tex
+%: %.tex
 	echo "Running latex..."
-	latex $(FILENAME).tex
+	pdflatex $@.tex
+	bibtex $@
+	pdflatex $@.tex
+	pdflatex $@.tex
+	evince $@.pdf
+
+$@.dvi: clean $@.tex
+	echo "Running latex..."
+	latex $@.tex
 	echo "Running makeindex..."
-	#makeindex $(FILENAME).idx
+	#makeindex $@.idx
 	echo "Rerunning latex...."
-	latex $(FILENAME).tex
+	latex $@.tex
 	latex_count=5 ; \
 	while egrep -s 'Rerun (LaTeX|to get cross-references right)' refman.log && [ $$latex_count -gt 0 ] ;\
 	    do \
@@ -43,4 +37,4 @@ $(FILENAME).dvi: clean $(FILENAME).tex
 	    done
 
 clean:
-	rm -f *.ps *.dvi *.aux *.toc *.idx *.ind *.ilg *.log *.out *.brf *.blg *.bbl $(FILENAME).pdf
+	rm -f *.ps *.dvi *.aux *.toc *.idx *.ind *.ilg *.log *.out *.brf *.blg *.bbl *.loa *.loc *.lof *.loq *.lot
